@@ -2,6 +2,7 @@ import { Activity, ArrowRight, FunctionSquare, ScanSearch } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import type { AttentionResult, LabExample, LabModule } from '../types';
 import { formatNumber, rowSum } from '../lib/attention';
+import { Formula } from './Formula';
 
 interface AttentionMicroscopeProps {
   example: LabExample;
@@ -9,6 +10,21 @@ interface AttentionMicroscopeProps {
   attention: AttentionResult | null;
   matrixView: boolean;
 }
+
+const formulaSteps = [
+  { label: 'Score', latex: String.raw`S=QK^\top`, copy: '每个 Query 与所有 Key 做点积，得到原始相关性分数。' },
+  {
+    label: 'Scale',
+    latex: String.raw`\tilde{S}=S/\sqrt{d_k}`,
+    copy: '高维点积容易过大，缩放让 softmax 不至于变得过尖。',
+  },
+  {
+    label: 'Normalize',
+    latex: String.raw`A=\operatorname{softmax}(\tilde{S})`,
+    copy: '把每一行分数变成概率分布，权重总和为 1。',
+  },
+  { label: 'Readout', latex: String.raw`Z=AV`, copy: '按权重混合 Value，得到新的上下文化向量。' },
+];
 
 export function AttentionMicroscope({ example, module, attention, matrixView }: AttentionMicroscopeProps) {
   const visibleTokens = example.tokens.slice(0, 8);
@@ -27,15 +43,11 @@ export function AttentionMicroscope({ example, module, attention, matrixView }: 
 
       <div className="attentionLayout">
         <div className="formulaTrack">
-          {[
-            ['QK^T', '每个 Query 与所有 Key 做点积，得到原始相关性分数。'],
-            ['/ sqrt(d_k)', '高维点积容易过大，缩放让 softmax 不至于变得过尖。'],
-            ['softmax', '把每一行分数变成概率分布，权重总和为 1。'],
-            ['× V', '按权重混合 Value，得到新的上下文化向量。'],
-          ].map(([label, copy], index) => (
+          {formulaSteps.map(({ label, latex, copy }, index) => (
             <div className={module.id === 'scaled-attention' ? 'formulaStep active' : 'formulaStep'} key={label}>
               <FunctionSquare size={18} />
               <strong>{label}</strong>
+              <Formula latex={latex} ariaLabel={label} />
               <p>{copy}</p>
               {index < 3 && <ArrowRight size={16} className="formulaArrow" />}
             </div>

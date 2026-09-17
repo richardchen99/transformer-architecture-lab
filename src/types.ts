@@ -15,6 +15,7 @@ export interface LabModule {
   research: string;
   mathematical: string;
   formula?: string;
+  formulaLatex?: string;
 }
 
 export interface AttentionHead {

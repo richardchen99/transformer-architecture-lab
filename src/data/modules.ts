@@ -18,7 +18,9 @@ export const modules: LabModule[] = [
     research:
       'Tokenizer 选择会影响长文本成本、罕见词覆盖、跨语言表现和模型压缩效率。BPE、WordPiece、SentencePiece 本质上是在词表大小和组合能力之间做折中。',
     mathematical:
-      'Tokenizer 定义了映射 f: text -> [t_1, ..., t_n]，随后查表 E[t_i] 得到每个 token 的初始向量。',
+      'Tokenizer 先把文本映射为 token 序列，随后每个 token 才能进入 embedding table 取得初始向量。',
+    formula: 'f_tok(text) -> [t_1, ..., t_n]',
+    formulaLatex: String.raw`f_{\mathrm{tok}}(\mathrm{text})=\left[t_1,t_2,\ldots,t_n\right]`,
   },
   {
     id: 'embedding',
@@ -37,7 +39,9 @@ export const modules: LabModule[] = [
     research:
       'Embedding matrix 是模型参数的一部分。训练会不断调整它，使高维空间里的方向承载语义、句法和任务相关信号。',
     mathematical:
-      '给定词表 V 和维度 d_model，embedding table E ∈ R^{|V| × d_model}，token t 的向量为 x_t = E[t]。',
+      '给定词表和模型维度，embedding table 是一个可学习矩阵；查表结果就是 token 的连续坐标。',
+    formula: 'x_i = E[t_i], E in R^{|V| x d_model}',
+    formulaLatex: String.raw`x_i=E[t_i],\qquad E\in\mathbb{R}^{|V|\times d_{\mathrm{model}}}`,
   },
   {
     id: 'positional-encoding',
@@ -56,8 +60,9 @@ export const modules: LabModule[] = [
     research:
       '位置方案可以是固定正余弦、可学习绝对位置、相对位置、RoPE 或 ALiBi。不同方案会影响长上下文外推能力。',
     mathematical:
-      '输入表示通常写作 z_i = E[t_i] + P_i，其中 P_i 是第 i 个位置的编码。',
+      '输入表示由 token embedding 与同位置的位置向量相加得到，正余弦形式给每个维度分配不同频率。',
     formula: 'PE(pos, 2i)=sin(pos/10000^{2i/d}); PE(pos, 2i+1)=cos(pos/10000^{2i/d})',
+    formulaLatex: String.raw`\begin{aligned}PE_{(pos,2i)}&=\sin\left(\frac{pos}{10000^{2i/d_{\mathrm{model}}}}\right)\\PE_{(pos,2i+1)}&=\cos\left(\frac{pos}{10000^{2i/d_{\mathrm{model}}}}\right)\end{aligned}`,
   },
   {
     id: 'qkv',
@@ -76,8 +81,9 @@ export const modules: LabModule[] = [
     research:
       'Q、K、V 来自可学习矩阵 W_Q、W_K、W_V。不同 head 使用不同投影子空间，从而捕捉不同关系。',
     mathematical:
-      'Q = XW_Q, K = XW_K, V = XW_V，其中 X 是输入 token 表示矩阵。',
+      '同一个输入表示矩阵会经过三组可学习投影，分别得到查询、索引和可读取内容。',
     formula: 'Q = XW_Q, K = XW_K, V = XW_V',
+    formulaLatex: String.raw`Q=XW_Q,\qquad K=XW_K,\qquad V=XW_V`,
   },
   {
     id: 'scaled-attention',
@@ -96,8 +102,9 @@ export const modules: LabModule[] = [
     research:
       'scale 项抑制高维点积方差，softmax 把 logits 转成归一化分布，权重矩阵乘以 V 得到上下文化表示。',
     mathematical:
-      '核心公式是 Attention(Q,K,V)=softmax(QK^T/sqrt(d_k))V。',
+      '核心公式表达了三步：点积得到相似度，按 key 维度缩放，再用 softmax 权重读取 Value。',
     formula: 'Attention(Q,K,V)=softmax(QK^T / sqrt(d_k))V',
+    formulaLatex: String.raw`\operatorname{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V`,
   },
   {
     id: 'multi-head',
@@ -116,8 +123,9 @@ export const modules: LabModule[] = [
     research:
       '每个 head 有独立的 W_Q/W_K/W_V，输出 concat 后经 W_O 融合。head 数量影响表达能力和计算成本。',
     mathematical:
-      'MultiHead(Q,K,V)=Concat(head_1,...,head_h)W_O。',
+      '每个 head 在自己的投影空间中计算 attention，所有 head 拼接后再投影回模型维度。',
     formula: 'head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)',
+    formulaLatex: String.raw`\begin{aligned}\mathrm{head}_i&=\operatorname{Attention}(QW_i^Q,KW_i^K,VW_i^V)\\\operatorname{MultiHead}(Q,K,V)&=\operatorname{Concat}(\mathrm{head}_1,\ldots,\mathrm{head}_h)W_O\end{aligned}`,
   },
   {
     id: 'add-norm',
@@ -136,8 +144,9 @@ export const modules: LabModule[] = [
     research:
       'Pre-LN 与 Post-LN 架构会影响训练稳定性。现代大模型多采用 Pre-LN 或变体来改善深层梯度。',
     mathematical:
-      '常见 Post-LN 写法：LayerNorm(x + Sublayer(x))。',
+      '常见 Post-LN 写法会先把子层输出加回原输入，再做 LayerNorm 稳定表示分布。',
     formula: 'y = LayerNorm(x + Sublayer(x))',
+    formulaLatex: String.raw`y=\operatorname{LayerNorm}\left(x+\operatorname{Sublayer}(x)\right)`,
   },
   {
     id: 'ffn',
@@ -156,8 +165,9 @@ export const modules: LabModule[] = [
     research:
       'FFN 通常是 d_model -> d_ff -> d_model 的两层结构，中间用 GELU/SwiGLU 等激活函数。',
     mathematical:
-      'FFN(x)=W_2 activation(W_1x+b_1)+b_2。',
+      'FFN 通常先升维、经过非线性激活，再投影回模型维度，对每个位置独立生效。',
     formula: 'FFN(x)=W_2 GELU(W_1x+b_1)+b_2',
+    formulaLatex: String.raw`\operatorname{FFN}(x)=W_2\,\operatorname{GELU}(W_1x+b_1)+b_2`,
   },
   {
     id: 'encoder',
@@ -176,7 +186,9 @@ export const modules: LabModule[] = [
     research:
       'Encoder block 通常由 self-attention、residual、norm、FFN、residual、norm 组成，输出可用于分类、检索、翻译源端编码等任务。',
     mathematical:
-      'H^{l+1}=Block(H^l)，多层递推得到 H^N。',
+      'Encoder stack 可以看作对隐藏状态的逐层递推，最终得到深层上下文化表示。',
+    formula: 'H^{l+1}=Block(H^l)',
+    formulaLatex: String.raw`H^{\ell+1}=\operatorname{Block}(H^\ell),\qquad \ell=0,\ldots,N-1`,
   },
   {
     id: 'decoder',
@@ -195,8 +207,9 @@ export const modules: LabModule[] = [
     research:
       'Causal mask 将未来位置 logits 置为 -∞，softmax 后对应权重为 0。KV cache 可避免重复计算历史 key/value。',
     mathematical:
-      'mask_{ij}=-∞ if j>i else 0; softmax((QK^T+mask)/sqrt(d_k))V',
+      'mask 会在 softmax 之前屏蔽未来位置，因此每个生成位置只能读取自己和历史 token。',
     formula: 'softmax((QK^T + M) / sqrt(d_k))V',
+    formulaLatex: String.raw`\begin{aligned}M_{ij}&=\begin{cases}-\infty,&j>i\\0,&j\le i\end{cases}\\\operatorname{MaskedAttention}&=\operatorname{softmax}\left(\frac{QK^\top+M}{\sqrt{d_k}}\right)V\end{aligned}`,
   },
   {
     id: 'cross-attention',
@@ -215,7 +228,8 @@ export const modules: LabModule[] = [
     research:
       'Cross-attention 的 Q 来自 target hidden state，K/V 来自 encoder output，使目标端生成条件化于源序列。',
     mathematical:
-      'Q = H_dec W_Q, K = H_enc W_K, V = H_enc W_V。',
+      'Cross-attention 中，Decoder 提供 Query，Encoder 输出提供 Key 和 Value，使生成过程条件化于输入序列。',
     formula: 'Attention(H_dec W_Q, H_enc W_K, H_enc W_V)',
+    formulaLatex: String.raw`\operatorname{Attention}\left(H_{\mathrm{dec}}W_Q,\ H_{\mathrm{enc}}W_K,\ H_{\mathrm{enc}}W_V\right)`,
   },
 ];

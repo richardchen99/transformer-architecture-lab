@@ -1,13 +1,23 @@
-import { Calculator, CheckCircle2, Table2 } from 'lucide-react';
+import { ArrowRight, Calculator, CheckCircle2, Table2 } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import type { AttentionResult, LabExample } from '../types';
 import { formatNumber, rowSum } from '../lib/attention';
+import { Formula } from './Formula';
 
 interface MathConsoleProps {
   example: LabExample;
   attention: AttentionResult | null;
   causalMask: boolean;
 }
+
+const attentionFormula = String.raw`\operatorname{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V`;
+
+const attentionSteps = [
+  { label: 'Score', latex: String.raw`S=QK^\top` },
+  { label: 'Scale', latex: String.raw`\tilde{S}=S/\sqrt{d_k}` },
+  { label: 'Normalize', latex: String.raw`A=\operatorname{softmax}(\tilde{S})` },
+  { label: 'Readout', latex: String.raw`Z=AV` },
+];
 
 function MatrixTable({
   title,
@@ -72,19 +82,37 @@ export function MathConsole({ example, attention, causalMask }: MathConsoleProps
       <div className="mathSummary">
         <div>
           <Calculator size={20} />
-          <strong>Attention(Q,K,V)</strong>
-          <span>softmax(QK^T / sqrt(d_k))V</span>
+          <div>
+            <strong>Attention(Q,K,V)</strong>
+            <span className="summaryFormula">
+              <Formula latex={attentionFormula} ariaLabel="scaled dot-product attention formula" />
+            </span>
+          </div>
         </div>
         <div>
           <CheckCircle2 size={20} />
-          <strong>Row sum check</strong>
-          <span>{attention.attentionWeights.slice(0, 4).map((row) => rowSum(row).toFixed(2)).join(' / ')}</span>
+          <div>
+            <strong>Row sum check</strong>
+            <span>{attention.attentionWeights.slice(0, 4).map((row) => rowSum(row).toFixed(2)).join(' / ')}</span>
+          </div>
         </div>
         <div>
           <Table2 size={20} />
-          <strong>Mask</strong>
-          <span>{causalMask ? 'future tokens are zeroed' : 'full bidirectional attention'}</span>
+          <div>
+            <strong>Mask</strong>
+            <span>{causalMask ? 'future tokens are zeroed' : 'full bidirectional attention'}</span>
+          </div>
         </div>
+      </div>
+
+      <div className="equationChain" aria-label="Attention computation sequence">
+        {attentionSteps.map((step, index) => (
+          <div className="equationNode" key={step.label}>
+            <small>{step.label}</small>
+            <Formula latex={step.latex} ariaLabel={step.label} />
+            {index < attentionSteps.length - 1 && <ArrowRight size={16} className="equationArrow" />}
+          </div>
+        ))}
       </div>
 
       <div className="matrixGrid">

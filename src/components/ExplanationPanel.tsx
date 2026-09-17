@@ -1,5 +1,6 @@
 import { AlertCircle, ArrowRight, Braces, Lightbulb, Sigma } from 'lucide-react';
 import type { ExplainMode, LabExample, LabModule } from '../types';
+import { Formula } from './Formula';
 
 interface ExplanationPanelProps {
   module: LabModule;
@@ -23,6 +24,11 @@ export function ExplanationPanel({ module, example, explainMode, onFormulaOpen }
       </div>
       <h1>{module.title}</h1>
       <p className="leadCopy">{modeCopy}</p>
+      {explainMode === 'Mathematical' && module.formulaLatex && (
+        <div className="inlineEquationCard">
+          <Formula latex={module.formulaLatex} displayMode ariaLabel={module.formula} />
+        </div>
+      )}
 
       <div className="ioStrip">
         <div>
@@ -60,9 +66,9 @@ export function ExplanationPanel({ module, example, explainMode, onFormulaOpen }
         <small>{example.story}</small>
       </div>
 
-      <button className="formulaButton" type="button" onClick={onFormulaOpen} disabled={!module.formula}>
+      <button className="formulaButton" type="button" onClick={onFormulaOpen} disabled={!module.formulaLatex}>
         <Sigma size={16} />
-        Formula Overlay
+        Formula Lens
       </button>
     </aside>
   );

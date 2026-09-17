@@ -4,6 +4,10 @@ An interactive research-style lab for understanding the Transformer architecture
 
 这个项目的目标不是把 Transformer 写成一篇静态文章，而是把它拆成一套可以操作的“原理驾驶舱”：你可以切换案例、调整动画速度、打开或关闭 attention head、查看矩阵中间结果，并在同一个例子里贯穿理解完整机制。
 
+Research author: 中国人民大学 Richard Chen
+
+Homepage: https://richardchen99.github.io
+
 ## Core Idea
 
 Transformer 的核心能力来自一条连续的表示链：
@@ -18,11 +22,12 @@ Raw text -> tokens -> embeddings + positions -> Q/K/V -> scaled dot-product atte
 - **Embedding**: 把 token id 转成连续向量，并展示语义距离的直觉。
 - **Positional Encoding**: 用正余弦位置波解释为什么顺序信息必须被注入。
 - **Query / Key / Value**: 用“问题、索引、内容”解释 Q/K/V 的分工。
-- **Scaled Dot-Product Attention**: 展示 `softmax(QK^T / sqrt(d_k))V` 的完整计算路径。
+- **Scaled Dot-Product Attention**: 展示 $\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$ 的完整计算路径。
 - **Multi-Head Attention**: 可打开或关闭不同 head，比较语法、指代、局部上下文和长距离依赖。
 - **Add & Norm / FFN**: 解释残差、归一化和前馈网络为什么支撑深层堆叠。
 - **Encoder / Decoder**: 对比双向理解、causal mask、自回归 next-token generation 和 cross-attention。
 - **Math Console**: 显示 embeddings、Q、K、context vectors 和 attention weights，softmax 行求和可检查。
+- **Formula Lens**: 使用 KaTeX 渲染核心公式，避免把数学表达只作为普通文本展示。
 
 ## Built-in Examples
 
@@ -61,7 +66,7 @@ After pushing to `main`:
 The expected Pages URL is:
 
 ```text
-https://<your-github-username>.github.io/transformer-architecture-lab/
+https://richardchen99.github.io/transformer-architecture-lab/
 ```
 
 ## Project Structure

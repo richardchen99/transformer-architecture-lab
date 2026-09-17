@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   BrainCircuit,
+  ExternalLink,
   Github,
+  GraduationCap,
   Layers3,
   Network,
   Orbit,
@@ -19,6 +21,7 @@ import { Controls } from './components/Controls';
 import { EncoderDecoderView } from './components/EncoderDecoderView';
 import { ExampleWalkthrough } from './components/ExampleWalkthrough';
 import { ExplanationPanel } from './components/ExplanationPanel';
+import { Formula } from './components/Formula';
 import { MathConsole } from './components/MathConsole';
 import { MultiHeadView } from './components/MultiHeadView';
 import { TokenPipeline } from './components/TokenPipeline';
@@ -204,6 +207,16 @@ function App() {
               用一个可操控的例子，把 token、embedding、Q/K/V、scaled dot-product attention、多头机制、
               encoder/decoder 和 next-token generation 串成一条完整证据链。
             </p>
+            <div className="researchSignature">
+              <GraduationCap size={16} />
+              <span>
+                Research author · <strong>中国人民大学 Richard Chen</strong>
+              </span>
+              <a href="https://richardchen99.github.io" target="_blank" rel="noreferrer">
+                richardchen99.github.io
+                <ExternalLink size={13} />
+              </a>
+            </div>
           </motion.div>
 
           <div className="labGrid">
@@ -287,9 +300,13 @@ function App() {
               <button className="iconButton closeButton" type="button" onClick={() => setFormulaOpen(false)} aria-label="Close formula">
                 <X size={18} />
               </button>
-              <span className="eyebrow">FORMULA OVERLAY</span>
+              <span className="eyebrow">FORMULA LENS</span>
               <h2 id="formula-title">{currentModule.title}</h2>
-              <code>{currentModule.formula ?? 'This module is structural; inspect the surrounding equations in Math Console.'}</code>
+              {currentModule.formulaLatex && (
+                <div className="formulaDisplayCard">
+                  <Formula latex={currentModule.formulaLatex} displayMode ariaLabel={currentModule.formula} />
+                </div>
+              )}
               <p>{currentModule.mathematical}</p>
             </motion.div>
           </motion.div>

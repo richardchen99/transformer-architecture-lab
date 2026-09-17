@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import type { AttentionResult, LabExample, LabModule } from '../types';
+import { Formula } from './Formula';
 
 interface ArchitectureCanvasProps {
   module: LabModule;
@@ -175,9 +176,11 @@ export function ArchitectureCanvas({
             transition={{ duration, repeat: Infinity, repeatType: 'mirror' }}
           />
           <rect x="620" y="300" width="178" height="84" rx="18" fill="rgba(255,255,255,.82)" stroke="rgba(200,169,106,.24)" />
-          <text x="709" y="330" textAnchor="middle" className="svgBlockText">
-            softmax(QK^T/sqrt(dk))
-          </text>
+          <foreignObject x="636" y="312" width="146" height="32">
+            <div className="svgFormula">
+              <Formula latex={String.raw`\mathrm{softmax}\left(QK^\top/\sqrt{d_k}\right)`} />
+            </div>
+          </foreignObject>
           <text x="709" y="358" textAnchor="middle" className="svgLabel">
             normalized routing weights
           </text>

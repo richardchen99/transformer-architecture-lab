@@ -245,6 +245,75 @@ main {
   line-height: 1.75;
 }
 
+.researchSignature {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  max-width: 100%;
+  margin-top: 16px;
+  padding: 8px 12px;
+  border: 1px solid rgba(200, 169, 106, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.54);
+  color: var(--text-sub);
+  box-shadow: 0 10px 28px rgba(29, 39, 51, 0.05);
+  backdrop-filter: blur(18px);
+  font-size: 13px;
+}
+
+.researchSignature svg {
+  flex: 0 0 auto;
+  color: var(--gold-strong);
+}
+
+.researchSignature strong {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.researchSignature a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #446f91;
+  text-decoration: none;
+}
+
+.researchSignature a:hover {
+  color: var(--text);
+}
+
+.formula {
+  max-width: 100%;
+  color: inherit;
+}
+
+.formulaInline {
+  display: inline-flex;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  vertical-align: middle;
+}
+
+.formulaDisplay {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.formula .katex {
+  max-width: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+.formula .katex-display {
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .labGrid {
   display: grid;
   grid-template-columns: minmax(0, 1.48fr) minmax(340px, 0.72fr);
@@ -394,6 +463,20 @@ main {
 .explanationPanel h1 {
   font-size: 32px;
   line-height: 1.1;
+}
+
+.inlineEquationCard {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(200, 169, 106, 0.22);
+  border-radius: var(--radius-md);
+  background: rgba(255, 251, 241, 0.74);
+  color: var(--text);
+  overflow-x: auto;
+}
+
+.inlineEquationCard .katex {
+  font-size: 1.04em;
 }
 
 .ioStrip {
@@ -795,6 +878,20 @@ main {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
+.formulaStep .formulaInline {
+  display: flex;
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text);
+}
+
+.formulaStep .katex {
+  font-size: 0.98em;
+}
+
 .formulaStep p {
   margin: 7px 0 0;
   color: var(--text-sub);
@@ -865,6 +962,20 @@ main {
   justify-content: center;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 11px;
+}
+
+.svgFormula {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.svgFormula .formulaInline {
+  max-width: 100%;
+  padding: 0 2px;
 }
 
 .heatmap.matrixMode .heatmapRow span {
@@ -1100,6 +1211,10 @@ main {
   margin-bottom: 16px;
 }
 
+.mathSummary > div > div {
+  min-width: 0;
+}
+
 .mathSummary strong,
 .mathSummary span {
   display: block;
@@ -1110,6 +1225,55 @@ main {
   color: var(--text-sub);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 12px;
+}
+
+.mathSummary .summaryFormula {
+  display: block;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.mathSummary .summaryFormula .katex {
+  font-size: 0.94em;
+}
+
+.equationChain {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.equationNode {
+  position: relative;
+  min-width: 0;
+  min-height: 82px;
+  padding: 12px;
+  border: 1px solid rgba(29, 39, 51, 0.08);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.64);
+  overflow: hidden;
+}
+
+.equationNode small {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--gold-strong);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.equationNode .formulaInline {
+  width: 100%;
+  padding-right: 22px;
+}
+
+.equationArrow {
+  position: absolute;
+  right: 10px;
+  top: 14px;
+  color: var(--gold-strong);
 }
 
 .matrixGrid {
@@ -1329,6 +1493,22 @@ main {
   font-size: 15px;
 }
 
+.formulaDisplayCard {
+  width: 100%;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(200, 169, 106, 0.22);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 241, 0.88), rgba(255, 255, 255, 0.72)),
+    rgba(255, 255, 255, 0.82);
+  color: var(--text);
+  overflow-x: auto;
+}
+
+.formulaDisplayCard .katex {
+  font-size: 1.16em;
+}
+
 .formulaSheet p {
   color: var(--text-sub);
   line-height: 1.7;
@@ -1419,7 +1599,8 @@ main {
   .headGrid,
   .pipelineGrid,
   .matrixGrid,
-  .misconceptionGrid {
+  .misconceptionGrid,
+  .equationChain {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1505,6 +1686,28 @@ main {
   .sectionIntro p,
   .leadCopy {
     font-size: 14px;
+  }
+
+  .researchSignature {
+    align-items: flex-start;
+    border-radius: 16px;
+  }
+
+  .researchSignature a {
+    width: 100%;
+    padding-left: 24px;
+  }
+
+  .equationChain {
+    grid-template-columns: 1fr;
+  }
+
+  .formulaSheet {
+    padding: 22px 16px 18px;
+  }
+
+  .formulaDisplayCard .katex {
+    font-size: 1em;
   }
 
   .primaryButton,
