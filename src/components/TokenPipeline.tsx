@@ -8,8 +8,17 @@ interface TokenPipelineProps {
   attention: AttentionResult | null;
 }
 
+const pipelineOrder = ['tokenization', 'embedding', 'positional-encoding', 'qkv'];
+
 export function TokenPipeline({ example, module, attention }: TokenPipelineProps) {
   const visible = example.tokens.slice(0, 10);
+  const currentStage = pipelineOrder.includes(module.id) ? pipelineOrder.indexOf(module.id) : pipelineOrder.length;
+
+  function stepClass(stepId: string, index: number) {
+    if (module.id === stepId) return 'pipelineStep active';
+    if (currentStage > index) return 'pipelineStep past';
+    return 'pipelineStep';
+  }
 
   return (
     <section className="sectionBand" id="token-flow">
@@ -23,14 +32,18 @@ export function TokenPipeline({ example, module, attention }: TokenPipelineProps
       </div>
 
       <div className="pipelineGrid">
-        <div className={module.id === 'tokenization' ? 'pipelineStep active' : 'pipelineStep'}>
+        <motion.div className={stepClass('tokenization', 0)} layout whileHover={{ y: -3 }}>
+          <i className="pipelinePulse" />
           <SplitSquareHorizontal size={20} />
-          <span>Raw Text</span>
+          <span className="stepIndex">01</span>
+          <span className="stepTitle">Raw Text</span>
           <p>{example.input}</p>
-        </div>
-        <div className={module.id === 'embedding' ? 'pipelineStep active' : 'pipelineStep'}>
+        </motion.div>
+        <motion.div className={stepClass('embedding', 1)} layout whileHover={{ y: -3 }}>
+          <i className="pipelinePulse" />
           <Binary size={20} />
-          <span>Token IDs</span>
+          <span className="stepIndex">02</span>
+          <span className="stepTitle">Token IDs</span>
           <div className="tokenWrap">
             {visible.map((token, index) => (
               <motion.b
@@ -39,34 +52,43 @@ export function TokenPipeline({ example, module, attention }: TokenPipelineProps
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.035 }}
+                className={module.id === 'embedding' ? 'tokenChip active' : 'tokenChip'}
               >
                 {token}
               </motion.b>
             ))}
           </div>
-        </div>
-        <div className={module.id === 'positional-encoding' ? 'pipelineStep active' : 'pipelineStep'}>
+        </motion.div>
+        <motion.div className={stepClass('positional-encoding', 2)} layout whileHover={{ y: -3 }}>
+          <i className="pipelinePulse" />
           <Waves size={20} />
-          <span>Position Signal</span>
+          <span className="stepIndex">03</span>
+          <span className="stepTitle">Position Signal</span>
           <div className="waveStack" aria-hidden="true">
             <i />
             <i />
             <i />
           </div>
-        </div>
-        <div className="pipelineStep">
+        </motion.div>
+        <motion.div className={stepClass('qkv', 3)} layout whileHover={{ y: -3 }}>
+          <i className="pipelinePulse" />
           <Map size={20} />
-          <span>Vector Space</span>
+          <span className="stepIndex">04</span>
+          <span className="stepTitle">Vector Space</span>
           <div className="miniVectors">
             {(attention?.embeddings.slice(0, 5) ?? []).map((vector, row) => (
               <div key={row}>
                 {vector.map((value, col) => (
-                  <i key={col} style={{ height: `${18 + value * 22}px` }} />
+                  <motion.i
+                    key={col}
+                    animate={{ height: `${18 + value * 22}px` }}
+                    transition={{ delay: row * 0.04 + col * 0.03, type: 'spring', stiffness: 180, damping: 22 }}
+                  />
                 ))}
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

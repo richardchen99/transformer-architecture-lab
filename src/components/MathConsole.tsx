@@ -79,16 +79,18 @@ export function MathConsole({ example, attention, causalMask }: MathConsoleProps
         </p>
       </div>
 
-      <div className="mathSummary">
+      <div className="attentionEquationCard">
         <div>
           <Calculator size={20} />
-          <div>
-            <strong>Attention(Q,K,V)</strong>
-            <span className="summaryFormula">
-              <Formula latex={attentionFormula} ariaLabel="scaled dot-product attention formula" />
-            </span>
-          </div>
+          <span className="eyebrow">ATTENTION OPERATOR</span>
         </div>
+        <Formula latex={attentionFormula} displayMode ariaLabel="scaled dot-product attention formula" />
+        <p>
+          Q 和 K 先形成相关性矩阵，缩放后进入 softmax，最后用归一化权重读取 V。下面每个矩阵卡对应这条链路中的一个可检查状态。
+        </p>
+      </div>
+
+      <div className="mathSummary compactStats">
         <div>
           <CheckCircle2 size={20} />
           <div>
@@ -99,8 +101,15 @@ export function MathConsole({ example, attention, causalMask }: MathConsoleProps
         <div>
           <Table2 size={20} />
           <div>
-            <strong>Mask</strong>
+            <strong>Attention mode</strong>
             <span>{causalMask ? 'future tokens are zeroed' : 'full bidirectional attention'}</span>
+          </div>
+        </div>
+        <div>
+          <Calculator size={20} />
+          <div>
+            <strong>Tensor slice</strong>
+            <span>{visibleTokens.length} tokens x {attention.queries[0]?.length ?? 0} dims</span>
           </div>
         </div>
       </div>

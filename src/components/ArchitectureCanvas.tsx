@@ -26,6 +26,20 @@ const stageOrder = [
   'cross-attention',
 ];
 
+const stageMeta = [
+  { id: 'tokenization', label: 'Tokens' },
+  { id: 'embedding', label: 'Embedding' },
+  { id: 'positional-encoding', label: 'Position' },
+  { id: 'qkv', label: 'Q/K/V' },
+  { id: 'scaled-attention', label: 'Attention' },
+  { id: 'multi-head', label: 'Heads' },
+  { id: 'add-norm', label: 'AddNorm' },
+  { id: 'ffn', label: 'FFN' },
+  { id: 'encoder', label: 'Encoder' },
+  { id: 'decoder', label: 'Decoder' },
+  { id: 'cross-attention', label: 'Cross' },
+];
+
 function isPast(currentId: string, targetId: string) {
   return stageOrder.indexOf(currentId) >= stageOrder.indexOf(targetId);
 }
@@ -44,6 +58,7 @@ export function ArchitectureCanvas({
   const weights = attention?.attentionWeights?.[focusIndex] ?? [];
   const enabledHeadCount = example.heads.filter((head) => enabledHeads[head.id]).length;
   const duration = 1.8 / speed;
+  const activeStageIndex = Math.max(0, stageOrder.indexOf(module.id));
 
   return (
     <div className="architecturePanel" aria-label="Animated Transformer architecture">
@@ -56,6 +71,21 @@ export function ArchitectureCanvas({
           <span />
           {loading ? 'THINKING' : 'INFERENCE'}
         </span>
+      </div>
+
+      <div className="architectureStageRail" aria-label="Transformer module progress">
+        {stageMeta.map((stage, index) => (
+          <span
+            key={stage.id}
+            className={[
+              index === activeStageIndex ? 'active' : '',
+              index < activeStageIndex ? 'complete' : '',
+            ].join(' ')}
+          >
+            <i />
+            <b>{stage.label}</b>
+          </span>
+        ))}
       </div>
 
       <svg className="architectureSvg" viewBox="0 0 980 540" role="img" aria-labelledby="architecture-title">
@@ -92,14 +122,17 @@ export function ArchitectureCanvas({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05, duration: 0.42 }}
               >
-                <rect
+                <motion.rect
                   x={x}
                   y="72"
                   width="86"
                   height="38"
                   rx="12"
-                  fill={active ? 'rgba(200,169,106,.26)' : 'rgba(255,255,255,.82)'}
-                  stroke={active ? '#C8A96A' : 'rgba(29,39,51,.13)'}
+                  animate={{
+                    fill: active ? 'rgba(200,169,106,.28)' : 'rgba(255,255,255,.82)',
+                    stroke: active ? '#C8A96A' : 'rgba(29,39,51,.13)',
+                  }}
+                  transition={{ duration: 0.35 }}
                 />
                 <text x={x + 43} y="96" textAnchor="middle" className="svgToken">
                   {token}
@@ -132,15 +165,20 @@ export function ArchitectureCanvas({
                 transition={{ duration: 0.25 }}
               >
                 {vector.map((value, axis) => (
-                  <rect
+                  <motion.rect
                     key={axis}
                     x={x + axis * 18}
                     y={196 - value * 34}
-                    width="12"
                     height={18 + value * 34}
+                    animate={{
+                      y: 196 - value * 34,
+                      height: 18 + value * 34,
+                      opacity: isPast(module.id, 'embedding') ? 0.55 + value * 0.35 : 0.28,
+                    }}
+                    width="12"
                     rx="5"
                     fill={axis % 2 ? '#6FA8DC' : '#C8A96A'}
-                    opacity={0.55 + value * 0.35}
+                    transition={{ type: 'spring', stiffness: 160, damping: 22, delay: axis * 0.025 }}
                   />
                 ))}
               </motion.g>
@@ -158,12 +196,16 @@ export function ArchitectureCanvas({
 
         <motion.g animate={{ opacity: isPast(module.id, 'qkv') ? 1 : 0.12 }}>
           {['Q', 'K', 'V'].map((label, row) => (
-            <g key={label}>
+            <motion.g
+              key={label}
+              animate={{ y: module.id === 'qkv' ? [-1, 2, -1] : 0 }}
+              transition={{ duration: 1.8, repeat: module.id === 'qkv' ? Infinity : 0, delay: row * 0.12 }}
+            >
               <rect x={116 + row * 94} y={320} width="72" height="42" rx="14" fill="url(#blueGlass)" stroke="rgba(111,168,220,.28)" />
               <text x={152 + row * 94} y="347" textAnchor="middle" className="svgBlockText">
                 {label}
               </text>
-            </g>
+            </motion.g>
           ))}
           <motion.path
             d="M 358 340 C 438 284, 532 284, 612 340"
@@ -175,7 +217,19 @@ export function ArchitectureCanvas({
             animate={{ pathLength: isPast(module.id, 'scaled-attention') ? 1 : 0.22 }}
             transition={{ duration, repeat: Infinity, repeatType: 'mirror' }}
           />
-          <rect x="620" y="300" width="178" height="84" rx="18" fill="rgba(255,255,255,.82)" stroke="rgba(200,169,106,.24)" />
+          <motion.rect
+            x="620"
+            y="300"
+            width="178"
+            height="84"
+            rx="18"
+            fill="rgba(255,255,255,.82)"
+            stroke="rgba(200,169,106,.24)"
+            animate={{
+              strokeWidth: module.id === 'scaled-attention' ? 2.2 : 1,
+              opacity: isPast(module.id, 'scaled-attention') ? 1 : 0.72,
+            }}
+          />
           <foreignObject x="636" y="312" width="146" height="32">
             <div className="svgFormula">
               <Formula latex={String.raw`\mathrm{softmax}\left(QK^\top/\sqrt{d_k}\right)`} />

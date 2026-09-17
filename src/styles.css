@@ -355,6 +355,73 @@ main {
   margin-bottom: 16px;
 }
 
+.architectureStageRail {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  gap: 5px;
+  margin: 2px 0 14px;
+  padding: 7px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(29, 39, 51, 0.07);
+}
+
+.architectureStageRail span {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 8px 6px;
+  border-radius: var(--radius-md);
+  color: var(--text-sub);
+  overflow: hidden;
+  transition: color 220ms var(--ease-soft), background 220ms var(--ease-soft), transform 220ms var(--ease-soft);
+}
+
+.architectureStageRail span::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  opacity: 0;
+  transform: translateX(-60%);
+}
+
+.architectureStageRail span.active {
+  color: var(--text);
+  background: rgba(255, 251, 241, 0.86);
+  transform: translateY(-1px);
+}
+
+.architectureStageRail span.active::before {
+  opacity: 1;
+  animation: railShine 1.7s infinite var(--ease-soft);
+}
+
+.architectureStageRail span.complete {
+  color: #436f5b;
+}
+
+.architectureStageRail i {
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(29, 39, 51, 0.11);
+}
+
+.architectureStageRail span.complete i,
+.architectureStageRail span.active i {
+  background: linear-gradient(90deg, var(--gold), var(--green));
+}
+
+.architectureStageRail b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 10px;
+}
+
 .statusPill {
   display: inline-flex;
   align-items: center;
@@ -733,25 +800,61 @@ main {
 }
 
 .pipelineStep {
+  position: relative;
   min-width: 0;
   min-height: 190px;
   padding: 16px;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(29, 39, 51, 0.09);
   background: rgba(255, 255, 255, 0.62);
-  transition: transform 220ms var(--ease-soft), border-color 220ms var(--ease-soft), box-shadow 220ms var(--ease-soft);
+  overflow: hidden;
+  transition: transform 220ms var(--ease-soft), border-color 220ms var(--ease-soft), box-shadow 220ms var(--ease-soft), background 220ms var(--ease-soft);
 }
 
 .pipelineStep.active {
   border-color: rgba(200, 169, 106, 0.52);
   box-shadow: var(--shadow-glow);
+  background:
+    linear-gradient(145deg, rgba(255, 251, 241, 0.84), rgba(255, 255, 255, 0.62)),
+    rgba(255, 255, 255, 0.62);
+}
+
+.pipelineStep.past {
+  border-color: rgba(128, 181, 155, 0.28);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.pipelinePulse {
+  position: absolute;
+  inset: auto 14px 12px 14px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(200, 169, 106, 0), var(--gold), rgba(111, 168, 220, 0));
+  opacity: 0;
+  transform: translateX(-40%);
+}
+
+.pipelineStep.active .pipelinePulse {
+  opacity: 1;
+  animation: signalSweep 1.8s infinite var(--ease-soft);
 }
 
 .pipelineStep svg {
   color: var(--gold-strong);
 }
 
-.pipelineStep span {
+.pipelineStep .stepIndex {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  margin: 0;
+  color: rgba(29, 39, 51, 0.28);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.pipelineStep .stepTitle {
   display: block;
   margin: 10px 0 8px;
   font-weight: 800;
@@ -783,6 +886,10 @@ main {
   color: var(--text);
   font-size: 13px;
   overflow-wrap: anywhere;
+}
+
+.tokenChip.active {
+  box-shadow: inset 0 0 0 1px rgba(200, 169, 106, 0.34), 0 10px 20px rgba(200, 169, 106, 0.11);
 }
 
 .tokenWrap.large b {
@@ -952,6 +1059,7 @@ main {
 }
 
 .heatmapRow span {
+  position: relative;
   height: 38px;
   border-radius: 9px;
   background: rgba(200, 169, 106, calc(0.08 + var(--heat) * 0.9));
@@ -960,6 +1068,52 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  transition: transform 180ms var(--ease-soft), box-shadow 180ms var(--ease-soft);
+}
+
+.heatmapRow span:hover,
+.heatmapRow span.strongCell {
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(29, 39, 51, 0.12), 0 10px 22px rgba(200, 169, 106, 0.14);
+}
+
+.heatmapRow span.strongCell::after {
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 7px;
+  content: "";
+}
+
+.attentionSpotlight {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -4px 0 14px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 251, 241, 0.82);
+  border: 1px solid rgba(200, 169, 106, 0.22);
+  color: var(--text-sub);
+  font-size: 13px;
+}
+
+.attentionSpotlight svg {
+  color: var(--gold-strong);
+}
+
+.attentionSpotlight strong {
+  color: var(--text);
+}
+
+.attentionSpotlight b {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(29, 39, 51, 0.9);
+  color: #fff9ea;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 11px;
 }
@@ -1025,6 +1179,7 @@ main {
 }
 
 .headLane {
+  position: relative;
   min-width: 0;
   min-height: 220px;
   padding: 16px;
@@ -1032,7 +1187,17 @@ main {
   border: 1px solid rgba(29, 39, 51, 0.09);
   background: rgba(255, 255, 255, 0.58);
   text-align: left;
+  overflow: hidden;
   transition: transform 220ms var(--ease-soft), border-color 220ms var(--ease-soft), background 220ms var(--ease-soft);
+}
+
+.headLane::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--head-color), transparent 70%), transparent 42%);
+  opacity: 0;
+  transition: opacity 220ms var(--ease-soft);
 }
 
 .headLane.active {
@@ -1040,7 +1205,13 @@ main {
   background: linear-gradient(180deg, color-mix(in srgb, var(--head-color), white 82%), rgba(255, 255, 255, 0.68));
 }
 
+.headLane.active::after {
+  opacity: 1;
+}
+
 .headTopline {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -1049,19 +1220,55 @@ main {
 }
 
 .headLane strong {
+  position: relative;
+  z-index: 1;
   display: block;
   margin: 18px 0 7px;
   font-size: 17px;
 }
 
 .headLane p {
+  position: relative;
+  z-index: 1;
   min-height: 68px;
   margin: 0;
   color: var(--text-sub);
   line-height: 1.55;
 }
 
+.headSignalPath {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 5px;
+  margin-top: 14px;
+}
+
+.headSignalPath i {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--head-color), white 34%);
+  transform-origin: left;
+  animation: headRoute 2.2s infinite var(--ease-soft);
+  opacity: 0.36;
+}
+
+.headSignalPath i:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.headSignalPath i:nth-child(3) {
+  animation-delay: 280ms;
+}
+
+.headLane.active .headSignalPath i {
+  opacity: 0.86;
+}
+
 .laneViz {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: end;
   height: 44px;
@@ -1097,11 +1304,14 @@ main {
 }
 
 .systemPanel {
+  position: relative;
   min-width: 0;
   padding: 18px;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(29, 39, 51, 0.09);
   background: rgba(255, 255, 255, 0.62);
+  overflow: hidden;
+  transition: border-color 220ms var(--ease-soft), box-shadow 220ms var(--ease-soft), background 220ms var(--ease-soft);
 }
 
 .systemPanel.active {
@@ -1109,11 +1319,155 @@ main {
   box-shadow: var(--shadow-glow);
 }
 
+.systemPanel.active::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.58) 36%, transparent 72%);
+  opacity: 0.42;
+  animation: panelShine 4.2s infinite var(--ease-soft);
+}
+
 .systemTitle {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 9px;
   margin-bottom: 16px;
+}
+
+.decoderPanel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.decoderProgress {
+  position: relative;
+  z-index: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(29, 39, 51, 0.08);
+  overflow: hidden;
+}
+
+.decoderProgress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), var(--green), var(--blue));
+}
+
+.decoderWorkbench {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+}
+
+.microLabel {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--gold-strong);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.decoderContext,
+.decoderMaskBlock,
+.logitPanel,
+.kvCachePanel,
+.generationTimeline {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(29, 39, 51, 0.08);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.contextTokenRail,
+.kvCachePanel div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.contextTokenRail b,
+.cacheSlot {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(238, 244, 248, 0.82);
+  color: var(--text-sub);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+}
+
+.contextTokenRail b.generatedContext,
+.cacheSlot.active {
+  background: rgba(255, 251, 241, 0.94);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px rgba(200, 169, 106, 0.28);
+}
+
+.decoderPhaseRail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.decoderPhase {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(29, 39, 51, 0.08);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.52);
+  color: var(--text-sub);
+}
+
+.decoderPhase svg {
+  color: var(--gold-strong);
+}
+
+.decoderPhase strong,
+.decoderPhase small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.decoderPhase strong {
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.decoderPhase small {
+  margin-top: 3px;
+  font-size: 10px;
+}
+
+.decoderPhase.active {
+  background: rgba(255, 251, 241, 0.92);
+  border-color: rgba(200, 169, 106, 0.4);
+  box-shadow: 0 12px 26px rgba(200, 169, 106, 0.12);
+}
+
+.decoderPhase.done {
+  background: rgba(238, 246, 241, 0.78);
+}
+
+.decoderSignalGrid {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) minmax(0, 1.2fr);
+  gap: 10px;
 }
 
 .systemTitle svg {
@@ -1183,12 +1537,86 @@ main {
   border: 1px dashed rgba(200, 111, 106, 0.28);
 }
 
+.decoderMask {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.decoderMask div {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.decoderMask i {
+  position: relative;
+  min-width: 0;
+  background: rgba(128, 181, 155, 0.34);
+  transition: background 220ms var(--ease-soft), border-color 220ms var(--ease-soft), transform 220ms var(--ease-soft);
+}
+
+.decoderMask i.visible {
+  box-shadow: inset 0 0 0 1px rgba(128, 181, 155, 0.18);
+}
+
+.decoderMask i.masked {
+  background: rgba(200, 111, 106, 0.12);
+}
+
+.decoderMask i.activeCell {
+  background: linear-gradient(145deg, rgba(200, 169, 106, 0.72), rgba(111, 168, 220, 0.32));
+  box-shadow: 0 0 0 3px rgba(200, 169, 106, 0.13);
+}
+
+.logitPanel {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.candidateBar {
+  display: grid;
+  grid-template-columns: minmax(54px, 0.52fr) minmax(80px, 1fr) 38px;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.candidateBar span,
+.candidateBar em {
+  overflow: hidden;
+  color: var(--text-sub);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.candidateBar.primary span,
+.candidateBar.primary em {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.candidateBar i {
+  display: block;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(29, 39, 51, 0.08);
+  overflow: hidden;
+}
+
+.candidateBar b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), var(--blue));
+}
+
 .generationRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   min-height: 42px;
-  margin-bottom: 14px;
 }
 
 .placeholderToken {
@@ -1197,11 +1625,61 @@ main {
 }
 
 .inferenceFooter {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.inferenceActions {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.runButton {
+  background: linear-gradient(135deg, #1d2733, #324252);
+}
+
+.attentionEquationCard {
+  min-width: 0;
+  margin-bottom: 14px;
+  padding: 18px;
+  border: 1px solid rgba(200, 169, 106, 0.22);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(200, 169, 106, 0.16), transparent 22rem),
+    linear-gradient(135deg, rgba(255, 251, 241, 0.86), rgba(255, 255, 255, 0.66));
+  overflow: hidden;
+}
+
+.attentionEquationCard > div {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.attentionEquationCard svg {
+  color: var(--gold-strong);
+}
+
+.attentionEquationCard .formulaDisplay {
+  padding: 8px 0 10px;
+}
+
+.attentionEquationCard .katex {
+  font-size: clamp(1rem, 1.8vw, 1.44rem);
+}
+
+.attentionEquationCard p {
+  margin: 8px 0 0;
+  max-width: 900px;
+  color: var(--text-sub);
+  line-height: 1.65;
 }
 
 .mathSummary {
@@ -1283,11 +1761,34 @@ main {
 }
 
 .matrixBlock {
+  position: relative;
   min-width: 0;
   padding: 14px;
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.62);
   border: 1px solid rgba(29, 39, 51, 0.09);
+  overflow: hidden;
+  transition: transform 180ms var(--ease-soft), box-shadow 180ms var(--ease-soft);
+}
+
+.matrixBlock::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(110deg, transparent 0%, rgba(111, 168, 220, 0.09) 42%, transparent 76%);
+  opacity: 0;
+  transform: translateX(-40%);
+}
+
+.matrixBlock:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(29, 39, 51, 0.08);
+}
+
+.matrixBlock:hover::before {
+  opacity: 1;
+  animation: panelShine 2.4s var(--ease-soft);
 }
 
 .matrixBlock.wide {
@@ -1319,6 +1820,13 @@ main {
   background: rgba(238, 244, 248, 0.76);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-weight: 600;
+  transition: background 180ms var(--ease-soft), transform 180ms var(--ease-soft);
+}
+
+.matrixRow b:hover,
+.weightRow b:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 251, 241, 0.9);
 }
 
 .weightRow {
@@ -1568,6 +2076,43 @@ main {
   }
 }
 
+@keyframes railShine {
+  0% {
+    transform: translateX(-80%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes signalSweep {
+  0% {
+    transform: translateX(-55%);
+  }
+  100% {
+    transform: translateX(55%);
+  }
+}
+
+@keyframes headRoute {
+  0%,
+  100% {
+    transform: scaleX(0.28);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes panelShine {
+  0% {
+    transform: translateX(-70%);
+  }
+  100% {
+    transform: translateX(70%);
+  }
+}
+
 @media (max-width: 1180px) {
   .topNav {
     grid-template-columns: minmax(0, 1fr);
@@ -1603,6 +2148,10 @@ main {
   .equationChain {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .architectureStageRail {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 680px) {
@@ -1636,8 +2185,27 @@ main {
   .matrixGrid,
   .misconceptionGrid,
   .mathSummary,
-  .evidenceChain {
+  .evidenceChain,
+  .equationChain,
+  .decoderSignalGrid {
     grid-template-columns: 1fr;
+  }
+
+  .architectureStageRail {
+    grid-template-columns: repeat(11, minmax(72px, 1fr));
+    overflow-x: auto;
+  }
+
+  .decoderPhaseRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .attentionEquationCard {
+    padding: 15px;
+  }
+
+  .attentionEquationCard .katex {
+    font-size: 1rem;
   }
 
   .segmented {
@@ -1670,6 +2238,10 @@ main {
 
   .layerStack b {
     white-space: normal;
+  }
+
+  .inferenceActions {
+    width: 100%;
   }
 }
 

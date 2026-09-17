@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { GitMerge, ToggleLeft, ToggleRight } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import type { LabExample, LabModule } from '../types';
@@ -24,12 +25,16 @@ export function MultiHeadView({ example, module, enabledHeads, onToggleHead }: M
         {example.heads.map((head, index) => {
           const enabled = enabledHeads[head.id];
           return (
-            <button
+            <motion.button
               type="button"
               key={head.id}
               className={enabled ? 'headLane active' : 'headLane'}
               onClick={() => onToggleHead(head.id)}
               style={{ '--head-color': head.color } as CSSProperties}
+              whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              animate={{ opacity: enabled ? 1 : 0.66 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 24 }}
             >
               <span className="headTopline">
                 <b>{head.label}</b>
@@ -37,12 +42,17 @@ export function MultiHeadView({ example, module, enabledHeads, onToggleHead }: M
               </span>
               <strong>{head.focus}</strong>
               <p>{head.description}</p>
+              <span className="headSignalPath" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
               <span className="laneViz" aria-hidden="true">
                 {[0, 1, 2, 3, 4].map((item) => (
                   <i key={item} style={{ '--i': index + item } as CSSProperties} />
                 ))}
               </span>
-            </button>
+            </motion.button>
           );
         })}
       </div>

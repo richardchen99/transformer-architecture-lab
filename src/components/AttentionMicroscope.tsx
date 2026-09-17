@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Activity, ArrowRight, FunctionSquare, ScanSearch } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import type { AttentionResult, LabExample, LabModule } from '../types';
@@ -30,6 +31,9 @@ export function AttentionMicroscope({ example, module, attention, matrixView }: 
   const visibleTokens = example.tokens.slice(0, 8);
   const focusIndex = Math.max(0, visibleTokens.findIndex((token) => token === example.focusToken));
   const weights = attention?.attentionWeights?.[focusIndex]?.slice(0, 8) ?? [];
+  const strongestIndex = weights.reduce((bestIndex, value, index) => (value > (weights[bestIndex] ?? -1) ? index : bestIndex), 0);
+  const strongestToken = visibleTokens[strongestIndex] ?? visibleTokens[0];
+  const strongestWeight = weights[strongestIndex] ?? 0;
 
   return (
     <section className="sectionBand" id="attention">
@@ -44,13 +48,21 @@ export function AttentionMicroscope({ example, module, attention, matrixView }: 
       <div className="attentionLayout">
         <div className="formulaTrack">
           {formulaSteps.map(({ label, latex, copy }, index) => (
-            <div className={module.id === 'scaled-attention' ? 'formulaStep active' : 'formulaStep'} key={label}>
+            <motion.div
+              className={module.id === 'scaled-attention' ? 'formulaStep active' : 'formulaStep'}
+              key={label}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -2 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ delay: index * 0.06, type: 'spring', stiffness: 220, damping: 24 }}
+            >
               <FunctionSquare size={18} />
               <strong>{label}</strong>
               <Formula latex={latex} ariaLabel={label} />
               <p>{copy}</p>
               {index < 3 && <ArrowRight size={16} className="formulaArrow" />}
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -61,6 +73,12 @@ export function AttentionMicroscope({ example, module, attention, matrixView }: 
               <h3>{example.focusToken} reads from context</h3>
             </div>
             <ScanSearch size={20} />
+          </div>
+          <div className="attentionSpotlight">
+            <span>{example.focusToken}</span>
+            <ArrowRight size={15} />
+            <strong>{strongestToken}</strong>
+            <b>{formatNumber(strongestWeight)}</b>
           </div>
           <div className={matrixView ? 'heatmap matrixMode' : 'heatmap'} role="table" aria-label="Attention weights">
             <div className="heatmapHead" role="row">
@@ -78,6 +96,7 @@ export function AttentionMicroscope({ example, module, attention, matrixView }: 
                     <span
                       role="cell"
                       key={`${rowToken}-${colToken}-${colIndex}`}
+                      className={rowIndex === focusIndex && colIndex === strongestIndex ? 'strongCell' : ''}
                       style={{ '--heat': String(value) } as CSSProperties}
                       title={`${rowToken} -> ${colToken}: ${formatNumber(value)}`}
                     >

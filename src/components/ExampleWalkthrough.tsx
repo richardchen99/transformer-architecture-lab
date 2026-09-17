@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { BookOpenCheck, CircleHelp, LocateFixed, Route } from 'lucide-react';
 import type { LabExample, LabModule } from '../types';
 
@@ -45,16 +46,19 @@ export function ExampleWalkthrough({ example, modules, activeModuleId, onModuleS
       <div className="walkthroughLayout">
         <div className="walkthroughRail">
           {modules.map((module, index) => (
-            <button
+            <motion.button
               key={module.id}
               type="button"
               className={activeModuleId === module.id ? 'walkStep active' : 'walkStep'}
               onClick={() => onModuleSelect(module.id)}
+              whileHover={{ x: 3 }}
+              whileTap={{ scale: 0.985 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
             >
               <span>{String(index + 1).padStart(2, '0')}</span>
               <strong>{module.title}</strong>
               <small>{module.solves}</small>
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -68,9 +72,16 @@ export function ExampleWalkthrough({ example, modules, activeModuleId, onModuleS
           </div>
           <div className="tokenWrap large">
             {example.tokens.map((token, index) => (
-              <b className={token === example.focusToken ? 'focusToken' : ''} key={`${token}-${index}`}>
+              <motion.b
+                className={token === example.focusToken ? 'focusToken' : ''}
+                key={`${token}-${index}`}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.025, type: 'spring', stiffness: 260, damping: 24 }}
+              >
                 {token}
-              </b>
+              </motion.b>
             ))}
           </div>
           <div className="evidenceChain">
@@ -90,12 +101,18 @@ export function ExampleWalkthrough({ example, modules, activeModuleId, onModuleS
       </div>
 
       <div className="misconceptionGrid">
-        {misconceptions.map((item) => (
-          <article key={item.title}>
+        {misconceptions.map((item, index) => (
+          <motion.article
+            key={item.title}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ delay: index * 0.04 }}
+          >
             <CircleHelp size={18} />
             <h3>{item.title}</h3>
             <p>{item.copy}</p>
-          </article>
+          </motion.article>
         ))}
       </div>
     </section>
