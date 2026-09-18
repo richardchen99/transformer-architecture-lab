@@ -1,113 +1,122 @@
 # Transformer Architecture Lab
 
-An interactive research-style lab for understanding the Transformer architecture through animated token flow, Q/K/V routing, attention heatmaps, multi-head comparison, encoder/decoder behavior, causal masking, and next-token generation.
+**Make attention an observable process.**
 
-这个项目的目标不是把 Transformer 写成一篇静态文章，而是把它拆成一套可以操作的“原理驾驶舱”：你可以切换案例、调整动画速度、打开或关闭 attention head、查看矩阵中间结果，并在同一个例子里贯穿理解完整机制。
+A visual workbench for following a sentence through tokens, vector representations, Q/K/V projections, attention weights, and contextual readout. Move between animated explanations and inspectable numbers without losing the example you are studying.
 
-Research author: 中国人民大学 Richard Chen
+[**Open the lab ↗**](https://richardchen99.github.io/transformer-architecture-lab/) · [Research note · 中文](https://richardchen99.github.io/blog/transformer-architecture-lab-note/) · [中文 README](README.zh-CN.md) · [Quick start](#quick-start)
 
-Homepage: https://richardchen99.github.io
+Created by **Richard Chen · Renmin University of China / 中国人民大学** · [Homepage](https://richardchen99.github.io)
 
-## Core Idea
+[![Transformer workbench with token flow, attention heatmap, and a numerical console](docs/assets/overview.jpg)](https://richardchen99.github.io/transformer-architecture-lab/)
 
-Transformer 的核心能力来自一条连续的表示链：
+*A real application capture. The same example connects the architecture view, attention matrix, and mathematical explanation.*
 
-Raw text -> tokens -> embeddings + positions -> Q/K/V -> scaled dot-product attention -> multi-head merge -> residual + normalization -> feed-forward refinement -> encoder/decoder output.
+## What you can investigate
 
-其中 self-attention 让每个 token 根据相关性读取其它 token 的 Value。Decoder 生成文本时会使用 causal mask，确保当前位置不能读取未来 token。
+| Question | Experiment | Observable result |
+| --- | --- | --- |
+| How does a token gather context? | Follow Q/K/V into scaled dot-product attention | Scores become a distribution, then a weighted sum of Values |
+| What changes under a causal mask? | Compare unrestricted and causal attention | Future positions are excluded from the readout |
+| What do the intermediate numbers mean? | Open Matrix View and the Math Console | Inspect embeddings, projections, weights, and context vectors |
+| How do the larger blocks fit together? | Explore head lanes, residual/FFN, and encoder/decoder views | Connect the numerical attention core to the architecture schematic |
+| How does autoregressive decoding unfold? | Play Next Token Prediction | Follow a scripted token sequence and its illustrated cache slots |
 
-## Interactive Modules
+Five built-in cases cover **pronoun reference, translation, next-token prediction, long-context dependency, and Chinese token boundaries**. Beginner, Research, and Mathematical modes offer different levels of explanation. The interface uses English controls with Chinese explanatory text.
 
-- **Token Flow**: 展示文本如何被切分成 token，并进入 embedding table。
-- **Embedding**: 把 token id 转成连续向量，并展示语义距离的直觉。
-- **Positional Encoding**: 用正余弦位置波解释为什么顺序信息必须被注入。
-- **Query / Key / Value**: 用“问题、索引、内容”解释 Q/K/V 的分工。
-- **Scaled Dot-Product Attention**: 展示 $\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$ 的完整计算路径。
-- **Multi-Head Attention**: 可打开或关闭不同 head，比较语法、指代、局部上下文和长距离依赖。
-- **Add & Norm / FFN**: 解释残差、归一化和前馈网络为什么支撑深层堆叠。
-- **Encoder / Decoder**: 对比双向理解、causal mask、自回归 next-token generation 和 cross-attention。
-- **Math Console**: 显示 embeddings、Q、K、context vectors 和 attention weights，softmax 行求和可检查。
-- **Formula Lens**: 使用 KaTeX 渲染核心公式，避免把数学表达只作为普通文本展示。
+## Architecture at a glance
 
-## Built-in Examples
+![Framework separating the computed attention core from conceptual Transformer and decoding views](docs/assets/architecture.png)
 
-- Pronoun Reference: `it -> animal`
-- Machine Translation: English to Chinese alignment
-- Next Token Prediction: autoregressive generation
-- Long Context Dependency: long-range reference
-- Chinese Tokenization: 中文 token 粒度示例
+*Original schematic: a numerical attention core surrounded by explanatory architecture views. [Editable SVG](docs/assets/architecture.svg) · [Figure provenance](docs/assets/README.md).*
 
-## Local Development
+## A two-minute experiment
+
+1. Open the lab, select **Machine Translation**, and enter **Research** mode.
+2. Choose **Scaled Dot-Product Attention** and **Matrix View**. Follow a Query across the seven-token attention row.
+3. Compare raw dot products, scaled scores, and softmax weights in the numerical views. Check the full-row sum, which is approximately one.
+4. Switch to **Next Token Prediction** and play the decoder sequence. Observe how the causal information boundary advances with each illustrated step.
+
+The translation case keeps the full attention row visible. For longer examples, a displayed matrix or console slice may omit columns; normalization applies to the **full row**, not necessarily the visible slice.
+
+<details>
+<summary><strong>Inspect the attention and decoding views</strong></summary>
+
+![Seven-token translation example with attention weights and a full-row normalization check](docs/assets/attention.jpg)
+
+*Attention inspection: all seven token columns are visible, with the full-row check displaying 1.00.*
+
+![Completed scripted next-token sequence in the decoder panel](docs/assets/decoder.jpg)
+
+*Decoder walkthrough: token order and cache slots explain the generation process; this panel uses a scripted continuation.*
+
+</details>
+
+## Computation and scope
+
+The attention utility computes deterministic four-dimensional embeddings, fixed linear projections, dot products, scaling, optional causal masking, softmax, and Value readout:
+
+$$
+Q=XW_Q,\qquad K=XW_K,\qquad V=XW_V,
+$$
+
+$$
+A=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right),
+\qquad Z=AV.
+$$
+
+Here, softmax is row-wise; the mask is zero for permitted positions and negative infinity for excluded positions. Intermediate values are rounded to three decimals for the demonstration, so numerical checks are approximate.
+
+The surrounding views explain the broader architecture. Head toggles change visual lanes rather than independently computed head outputs. Encoder/decoder stacks are conceptual; decoding uses fixed candidate scores and scripted tokens, and its cache slots do not implement numerical KV reuse. Candidate scores are illustrative and need not form a probability distribution. Token boundaries are preset, and the vectors are not trained model weights.
+
+This makes the lab useful for **teaching, architecture walkthroughs, and reading attention code**. For a numerical cache-equivalence experiment, continue to [LLM Inference Lab](https://github.com/richardchen99/llm-inference-lab).
+
+## Quick start
+
+Use **Node.js 24** and npm.
 
 ```bash
-npm install
-npm run dev
+git clone https://github.com/richardchen99/transformer-architecture-lab.git
+cd transformer-architecture-lab
+npm ci
+npm run dev -- --host 127.0.0.1
 ```
-
-## Build
 
 ```bash
 npm run build
+npm run preview -- --host 127.0.0.1
 ```
 
-The Vite config uses `base: './'`, so the built `dist/` directory can be hosted as a static site.
+React, TypeScript, Vite, Framer Motion, and KaTeX power the static application. The experiment runs in the browser; the asynchronous API-shaped helpers are local stubs. No model API key or GPU is required.
 
-## GitHub Pages
+The [Pages workflow](.github/workflows/deploy.yml) builds and deploys `main` with Node 24. There is currently no automated test script in this repository. A fork can deploy `dist/` after selecting **GitHub Actions** as its Pages source.
 
-This repository includes a GitHub Actions workflow at `.github/workflows/deploy.yml`.
+## Read the implementation
 
-After pushing to `main`:
+| Entry point | What to look for |
+| --- | --- |
+| [`src/lib/attention.ts`](src/lib/attention.ts) | Deterministic embeddings, Q/K/V, masking, softmax, and context vectors |
+| [`src/components/`](src/components/) | Attention inspection, head lanes, architecture panels, and decoder playback |
+| [`src/data/`](src/data/) | Preset examples and explanatory material |
+| [`src/api/labApi.ts`](src/api/labApi.ts) | Local asynchronous stubs used by the interface |
+| [`src/App.tsx`](src/App.tsx) · [`src/styles.css`](src/styles.css) | Shared experiment state and visual system |
 
-1. Open the repository on GitHub.
-2. Go to **Settings -> Pages**.
-3. Set **Source** to **GitHub Actions**.
-4. The workflow will build the Vite app and deploy `dist/`.
+## Reading and citation
 
-The expected Pages URL is:
+- Vaswani et al. [*Attention Is All You Need*](https://arxiv.org/abs/1706.03762), 2017 — the original Transformer.
+- Harvard NLP. [*The Annotated Transformer*](https://nlp.seas.harvard.edu/annotated-transformer/) — an implementation-oriented companion.
+- [Project research note](https://richardchen99.github.io/blog/transformer-architecture-lab-note/) — a Chinese walkthrough connecting the visual modules.
 
-```text
-https://richardchen99.github.io/transformer-architecture-lab/
-```
+If this lab supports your teaching or writing, link to the repository and record the commit you used. Machine-readable software attribution is available in [CITATION.cff](CITATION.cff).
 
-## Project Structure
+## Explore the series
 
-```text
-transformer-architecture-lab/
-├── .github/workflows/deploy.yml
-├── public/
-├── src/
-│   ├── api/labApi.ts
-│   ├── components/
-│   ├── data/
-│   ├── lib/attention.ts
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── styles.css
-├── index.html
-├── package.json
-├── tsconfig.json
-└── vite.config.ts
-```
+| Lab | Central question |
+| --- | --- |
+| [Tokenizer Playground](https://github.com/richardchen99/tokenizer-playground) | How does a corpus become a reusable vocabulary? |
+| **Transformer Architecture Lab** | How does attention turn token representations into context? |
+| [Position Encoding Lab](https://github.com/richardchen99/position-encoding-lab) | How does position change attention geometry? |
+| [LLM Inference Lab](https://github.com/richardchen99/llm-inference-lab) | When can past computation be reused? |
+| [LLM RL Lab](https://github.com/richardchen99/llm-rl-lab) | How does reward change a response distribution? |
 
-## Notes on the Attention Utility
-
-The app includes a simplified but real attention computation in `src/lib/attention.ts`.
-
-It produces:
-
-- token embeddings
-- Q/K/V projections
-- raw attention scores
-- scaled scores
-- softmax attention weights
-- context vectors
-
-For teaching clarity, the embeddings are deterministic mock vectors. They are not trained model weights, but the calculation shape follows the Transformer attention mechanism.
-
-## Extension Ideas
-
-- Add RoPE and ALiBi positional encoding views.
-- Compare encoder-only, decoder-only, and encoder-decoder model families.
-- Add KV-cache visualization for large language model inference.
-- Add a small tokenizer playground for BPE merge steps.
-- Export matrix states as CSV for teaching notebooks.
+Found it useful? A star helps others discover the series. Reproducible issues and focused improvements to the experiments are welcome.

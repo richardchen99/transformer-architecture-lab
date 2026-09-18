@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this lab in teaching or writing, please cite the software and record the commit used."
+type: software
+title: "Transformer Architecture Lab"
+abstract: "An interactive educational workbench for attention computation and Transformer architecture."
+authors:
+  - family-names: Chen
+    given-names: Richard
+    affiliation: "Renmin University of China"
+    website: "https://richardchen99.github.io"
+repository-code: "https://github.com/richardchen99/transformer-architecture-lab"
+url: "https://richardchen99.github.io/transformer-architecture-lab/"
+keywords:
+  - transformer
+  - attention
+  - interactive visualization
+  - education
