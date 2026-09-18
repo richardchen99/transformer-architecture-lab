@@ -61,7 +61,7 @@ Q=XW_Q,\qquad K=XW_K,\qquad V=XW_V,
 $$
 
 $$
-A=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right),
+A=\mathrm{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right),
 \qquad Z=AV.
 $$
 
