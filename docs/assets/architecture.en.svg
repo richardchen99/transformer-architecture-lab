@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1060" viewBox="0 0 1600 1060" role="img" aria-labelledby="title desc">
+<title id="title">From tokens to context</title><desc id="desc">The implemented attention path, with its surrounding teaching views.</desc>
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FCFAF5"/><stop offset="1" stop-color="#F2F7FA"/></linearGradient>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 Z" fill="#586B77"/></marker>
+<style>text{font-family:"Avenir Next","Trebuchet MS",sans-serif;fill:#22313D}.display{font-family:Charter,Georgia,serif;font-weight:700}.small{letter-spacing:2px;font-weight:600}</style>
+</defs>
+<rect width="1600" height="1060" rx="24" fill="url(#paper)"/>
+<text x="64" y="58" font-size="19" style="fill:#AA8244" class="small">MECHANISM ATLAS  /  01</text>
+<text x="64" y="121" font-size="45" style="fill:#22313D" class="display">From tokens to context</text>
+<text x="64" y="165" font-size="23" style="fill:#586B77" class="">The implemented attention path, with its surrounding teaching views.</text>
+<text x="64" y="229" font-size="19" style="fill:#4E7E9D" class="small">A  /  NUMERICAL COMPUTATION</text>
+<rect x="64" y="260" width="270" height="170" rx="18" fill="#FFFFFF" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="88" y="303" font-size="25" style="fill:#22313D" class="" font-weight="600">Example tokens</text>
+<text x="88" y="341" font-size="23" style="fill:#586B77" class="">Fixed English and</text>
+<text x="88" y="375" font-size="23" style="fill:#586B77" class="">Chinese sequences</text>
+<path d="M 334 345 L 356 345" fill="none" stroke="#586B77" stroke-width="2.3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="362" y="260" width="270" height="170" rx="18" fill="#F5F0E5" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="386" y="303" font-size="25" style="fill:#22313D" class="" font-weight="600">4D embeddings</text>
+<text x="386" y="341" font-size="23" style="fill:#586B77" class="">Fixed content profiles</text>
+<text x="386" y="375" font-size="23" style="fill:#586B77" class="">Position variation</text>
+<path d="M 632 345 L 654 345" fill="none" stroke="#586B77" stroke-width="2.3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="660" y="260" width="270" height="170" rx="18" fill="#FFFFFF" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="684" y="303" font-size="25" style="fill:#22313D" class="" font-weight="600">Q · K · V</text>
+<text x="684" y="341" font-size="23" style="fill:#586B77" class="">Fixed projections</text>
+<text x="684" y="375" font-size="23" style="fill:#586B77" class="">One attention kernel</text>
+<path d="M 930 345 L 952 345" fill="none" stroke="#586B77" stroke-width="2.3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="958" y="260" width="270" height="170" rx="18" fill="#EDF4F8" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="982" y="303" font-size="25" style="fill:#22313D" class="" font-weight="600">Attention</text>
+<text x="982" y="341" font-size="23" style="fill:#586B77" class="">Scale · mask</text>
+<text x="982" y="375" font-size="23" style="fill:#586B77" class="">Softmax · readout</text>
+<path d="M 1228 345 L 1250 345" fill="none" stroke="#586B77" stroke-width="2.3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1256" y="260" width="270" height="170" rx="18" fill="#EDF5F0" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="1280" y="303" font-size="25" style="fill:#22313D" class="" font-weight="600">Context vectors</text>
+<text x="1280" y="341" font-size="23" style="fill:#586B77" class="">Computed readout</text>
+<text x="1280" y="375" font-size="23" style="fill:#586B77" class="">Rounded values</text>
+<rect x="660" y="474" width="270" height="112" rx="18" fill="#F5F0E5" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="684" y="517" font-size="25" style="fill:#22313D" class="" font-weight="600">Causal rule</text>
+<text x="684" y="555" font-size="23" style="fill:#586B77" class="">Hide future positions</text>
+<path d="M 930 528 L 1093 528 L 1093 434" fill="none" stroke="#586B77" stroke-width="2.3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1256" y="474" width="270" height="112" rx="18" fill="#EDF5F0" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="1280" y="517" font-size="25" style="fill:#22313D" class="" font-weight="600">Math Console</text>
+<text x="1280" y="555" font-size="23" style="fill:#586B77" class="">Check full row sums</text>
+<path d="M 1391 430 L 1391 468" fill="none" stroke="#586B77" stroke-width="2.3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="64" y="529" font-size="24" style="fill:#4E7E9D" class="" font-weight="600">Fixed data + explicit operations</text>
+<text x="64" y="566" font-size="23" style="fill:#586B77" class="">No pretrained weights or model service.</text>
+<path d="M 64 629 L 1536 629" stroke="#CBD6DB" stroke-width="1.5" fill="none"/>
+<text x="64" y="678" font-size="19" style="fill:#AA8244" class="small">B  /  CONCEPTUAL TEACHING VIEWS</text>
+<rect x="64" y="710" width="460" height="202" rx="18" fill="#FFFFFF" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="88" y="753" font-size="27" style="fill:#22313D" class="" font-weight="600">Token &amp; position views</text>
+<text x="88" y="791" font-size="23" style="fill:#586B77" class="">Preset token boundaries</text>
+<text x="88" y="825" font-size="23" style="fill:#586B77" class="">Embedding and sinusoidal intuition</text>
+<rect x="570" y="710" width="460" height="202" rx="18" fill="#FFFFFF" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="594" y="753" font-size="27" style="fill:#22313D" class="" font-weight="600">Multi-head observatory</text>
+<text x="594" y="791" font-size="23" style="fill:#586B77" class="">Authored relationship roles</text>
+<text x="594" y="825" font-size="23" style="fill:#586B77" class="">Toggles change the visual lanes</text>
+<rect x="1076" y="710" width="460" height="202" rx="18" fill="#FFFFFF" stroke="#CBD6DB" stroke-width="1.5"/>
+<text x="1100" y="753" font-size="27" style="fill:#22313D" class="" font-weight="600">Decoder walkthrough</text>
+<text x="1100" y="791" font-size="23" style="fill:#586B77" class="">Mask · Logits · Sample · Cache</text>
+<text x="1100" y="825" font-size="23" style="fill:#586B77" class="">Scripted tokens and candidate scores</text>
+<path d="M 64 988 L 1536 988" stroke="#CBD6DB" stroke-width="1.5" fill="none"/>
+<text x="64" y="1023" font-size="18" style="fill:#586B77" class="">Conceptual panels are not an end-to-end Transformer forward pass.</text>
+<text x="1536" y="1023" font-size="18" style="fill:#586B77" class="" text-anchor="end">Richard Chen  ·  Interactive AI Research Labs</text>
+</svg>
